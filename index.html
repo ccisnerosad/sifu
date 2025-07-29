@@ -1,412 +1,354 @@
 <!DOCTYPE html>
 <html lang="es" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIFU: Pitch Deck Interactivo</title>
+    <title>SIFU: Dossier de Producción</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Venganza Eléctrica -->
-    <!-- Application Structure Plan: He diseñado una SPA con una barra de navegación lateral fija que permite un acceso rápido y claro a las secciones clave: Visión, Proyecto, Negocio e Invertir. Esta estructura no lineal es superior a un documento estático porque permite a los inversionistas saltar directamente a la información que más les interesa (como las finanzas), siguiendo un flujo lógico: 1. ¿Qué es? (Visión) 2. ¿Cómo se hará? (Proyecto) 3. ¿Es rentable? (Negocio) 4. ¿Por qué yo? (Invertir). Este enfoque respeta el tiempo del usuario y presenta la información de forma digerible y profesional. -->
-    <!-- Visualization & Content Choices: 
-        - Visión: Tarjetas de alto contraste para presentar el concepto, logline y diferenciador de forma impactante. Meta: Informar y enganchar.
-        - Equipo: Rejilla de tarjetas con efecto hover para presentar al equipo de forma visual y organizada. Meta: Organizar y demostrar capacidad.
-        - Cronograma: Diagrama de flujo horizontal hecho con HTML/CSS. Es interactivo al tacto y visualmente claro. Representa el flujo del tiempo mejor que una lista. Meta: Mostrar cambio y planificación.
-        - Gira: Tarjetas estilizadas para cada ciudad, separadas por nacional e internacional. Meta: Organizar y mostrar alcance.
-        - Finanzas: Gráficos de dona de Chart.js para Presupuesto e Ingresos, con un botón para alternar entre ellos. Esta visualización es ideal para mostrar proporciones (Goal: Compare) y la interacción del botón mantiene la interfaz limpia.
-        - Pitch: Frases clave destacadas para un cierre potente. Meta: Informar y persuadir.
-        Justificación: Todas las elecciones priorizan la claridad, el impacto visual y la interacción intuitiva sobre la presentación estática de datos, creando una experiencia más atractiva para un inversionista. Library: Chart.js para los gráficos. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #111827;
+            background: #111827;
             color: #E5E7EB;
-        }
-        .nav-link {
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-        }
-        .nav-link.active {
-            background-color: #374151;
-            color: #F9FAFB;
-            border-left-color: #DC2626;
-        }
-        .nav-link:hover {
-            background-color: #1F2937;
-            border-left-color: #F87171;
-        }
-        .card {
-            background-color: #1F2937;
-            border: 1px solid #374151;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
-        }
-        .btn-accent {
-            background-color: #DC2626;
-            color: #F9FAFB;
-            transition: background-color 0.3s ease;
-        }
-        .btn-accent:hover {
-            background-color: #B91C1C;
-        }
-        .btn-secondary {
-            background-color: #374151;
-            color: #F9FAFB;
-            transition: background-color 0.3s ease;
-        }
-        .btn-secondary:hover {
-            background-color: #4B5563;
-        }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: -2.75rem;
-            transform: translateY(-50%);
-            width: 1.5rem;
-            height: 1.5rem;
-            background-color: #374151;
-            border-radius: 50%;
-            border: 3px solid #DC2626;
-        }
-        .timeline-line {
-            position: absolute;
-            top: 50%;
-            left: -2rem;
-            transform: translateY(-50%);
-            width: 1px;
-            height: 150%;
-            background-color: #374151;
-            z-index: -1;
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 450px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 400px;
-            }
         }
     </style>
 </head>
-<body class="flex">
 
-    <nav class="hidden lg:block w-64 h-screen bg-gray-900 p-4 fixed top-0 left-0">
-        <h1 class="text-3xl font-black text-white mb-2">SIFU</h1>
-        <p class="text-red-600 font-bold mb-8">Pitch Deck Interactivo</p>
-        <ul class="space-y-2" id="desktop-nav">
-            <li><a href="#vision" class="nav-link block p-3 rounded-r-lg">Visión y Concepto</a></li>
-            <li><a href="#proyecto" class="nav-link block p-3 rounded-r-lg">El Proyecto</a></li>
-            <li><a href="#negocio" class="nav-link block p-3 rounded-r-lg">Modelo de Negocio</a></li>
-            <li><a href="#inversion" class="nav-link block p-3 rounded-r-lg">¿Por qué Invertir?</a></li>
-        </ul>
-    </nav>
-
-    <main class="w-full lg:ml-64">
-        <div class="p-4 sm:p-8 md:p-12">
-
-            <section id="vision" class="min-h-screen flex flex-col justify-center">
-                <div class="text-center mb-12">
-                     <h1 class="text-5xl md:text-7xl font-black text-white tracking-tighter">SIFU</h1>
-                     <p class="text-xl md:text-2xl text-red-500 font-semibold mt-2">La Siguiente Generación del Entretenimiento en Vivo</p>
-                </div>
-
-                <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="card p-6 rounded-lg">
-                        <h3 class="font-bold text-xl text-white mb-2">Concepto</h3>
-                        <p class="text-gray-300">Una producción teatral de artes marciales que fusiona la narrativa de un videojuego, la profundidad de una tragedia griega y una estética neo-noir.</p>
-                    </div>
-                    <div class="card p-6 rounded-lg">
-                        <h3 class="font-bold text-xl text-white mb-2">Logline</h3>
-                        <p class="text-gray-300">Un joven dedica su vida a la venganza, solo para descubrir que cada enemigo abatido le cuesta una década de su propia existencia y lo acerca a una verdad devastadora.</p>
-                    </div>
-                    <div class="card p-6 rounded-lg">
-                        <h3 class="font-bold text-xl text-white mb-2">Diferenciador</h3>
-                        <p class="text-gray-300">Un espectáculo multidisciplinario, inmersivo y diseñado desde su concepción para girar a nivel global, creando una propiedad intelectual 360°.</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="proyecto" class="py-20">
-                <h2 class="text-4xl font-black text-white mb-12">El Proyecto: Plan de Ejecución</h2>
-                <p class="max-w-3xl text-lg text-gray-400 mb-12">
-                    Esta sección detalla los componentes operativos que garantizan la viabilidad y excelencia de *SIFU*. Desde el equipo humano hasta la planificación temporal y geográfica, cada elemento está diseñado para el éxito.
-                </p>
-
-                <div class="mb-16">
-                    <h3 class="text-3xl font-bold text-white mb-8">Equipo Técnico Esencial</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        <div class="card p-4 text-center rounded-lg">
-                            <span class="text-4xl">🎬</span>
-                            <h4 class="font-bold mt-2 text-white">Director/a General</h4>
-                            <p class="text-sm text-gray-400">Alma creativa y líder del espectáculo multidisciplinario.</p>
-                        </div>
-                        <div class="card p-4 text-center rounded-lg">
-                            <span class="text-4xl">💼</span>
-                            <h4 class="font-bold mt-2 text-white">Productor/a Ejecutivo</h4>
-                            <p class="text-sm text-gray-400">Cerebro financiero y logístico del proyecto.</p>
-                        </div>
-                        <div class="card p-4 text-center rounded-lg">
-                            <span class="text-4xl">🥋</span>
-                            <h4 class="font-bold mt-2 text-white">Coreógrafo/a de Combate</h4>
-                            <p class="text-sm text-gray-400">Narra la evolución del personaje a través del movimiento.</p>
-                        </div>
-                        <div class="card p-4 text-center rounded-lg">
-                            <span class="text-4xl">🖼️</span>
-                            <h4 class="font-bold mt-2 text-white">Diseñador/a de Escenografía</h4>
-                            <p class="text-sm text-gray-400">Fusiona el espacio físico y digital para la gira.</p>
-                        </div>
-                        <div class="card p-4 text-center rounded-lg">
-                            <span class="text-4xl">💡</span>
-                            <h4 class="font-bold mt-2 text-white">Diseñador/a de Iluminación</h4>
-                            <p class="text-sm text-gray-400">Crea atmósferas y guía la narrativa con luz.</p>
-                        </div>
-                        <div class="card p-4 text-center rounded-lg">
-                            <span class="text-4xl">🔊</span>
-                            <h4 class="font-bold mt-2 text-white">Diseñador/a de Sonido</h4>
-                            <p class="text-sm text-gray-400">Construye el paisaje sonoro inmersivo de la obra.</p>
-                        </div>
-                        <div class="card p-4 text-center rounded-lg">
-                            <span class="text-4xl">📋</span>
-                            <h4 class="font-bold mt-2 text-white">Jefe Técnico / Stage Manager</h4>
-                            <p class="text-sm text-gray-400">Comandante de la ejecución en cada función.</p>
-                        </div>
-                         <div class="card p-4 text-center rounded-lg">
-                            <span class="text-4xl">🚚</span>
-                            <h4 class="font-bold mt-2 text-white">Equipo de Gira</h4>
-                            <p class="text-sm text-gray-400">Unidad compacta para montaje y operación en gira.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-16">
-                    <h3 class="text-3xl font-bold text-white mb-12">Cronograma General (24 Meses)</h3>
-                    <div class="relative pl-10">
-                        <div class="timeline-item relative pl-10 pb-10">
-                             <div class="timeline-line"></div>
-                            <h4 class="font-bold text-xl text-red-500">Fase 1: Pre-producción (6 meses)</h4>
-                            <p class="text-gray-300">Cierre de financiamiento, contratación de creativos, casting y diseño final.</p>
-                        </div>
-                        <div class="timeline-item relative pl-10 pb-10">
-                             <div class="timeline-line"></div>
-                            <h4 class="font-bold text-xl text-red-500">Fase 2: Producción y Ensayos (4 meses)</h4>
-                            <p class="text-gray-300">Construcción de escenografía, confección de vestuario y ensayos intensivos de combate y técnicos.</p>
-                        </div>
-                        <div class="timeline-item relative pl-10 pb-10">
-                             <div class="timeline-line"></div>
-                            <h4 class="font-bold text-xl text-red-500">Fase 3: Estreno y Temporada Inicial (4 meses)</h4>
-                            <p class="text-gray-300">Estreno en CDMX para generar críticas, boca a boca y recuperar inversión inicial.</p>
-                        </div>
-                        <div class="timeline-item relative pl-10 pb-10">
-                             <div class="timeline-line"></div>
-                            <h4 class="font-bold text-xl text-red-500">Fase 4: Gira Nacional (6 meses)</h4>
-                            <p class="text-gray-300">Expansión a mercados clave de México: Guadalajara, Monterrey, Querétaro, Tijuana.</p>
-                        </div>
-                        <div class="timeline-item relative pl-10 pb-10">
-                            <h4 class="font-bold text-xl text-red-500">Fase 5: Gira Internacional (6-9 meses)</h4>
-                            <p class="text-gray-300">Lanzamiento global en mercados estratégicos: Madrid, Los Ángeles, Seúl.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-3xl font-bold text-white mb-8">Plan de Gira y Mercados Estratégicos</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div>
-                            <h4 class="text-2xl font-semibold text-white mb-4">Gira Nacional 🇲🇽</h4>
-                            <div class="space-y-4">
-                                <div class="card p-4 rounded-lg"><strong>CDMX:</strong> Teatro de los Insurgentes</div>
-                                <div class="card p-4 rounded-lg"><strong>Guadalajara:</strong> Teatro Diana</div>
-                                <div class="card p-4 rounded-lg"><strong>Monterrey:</strong> Auditorio Pabellón M</div>
-                                <div class="card p-4 rounded-lg"><strong>Querétaro:</strong> Teatro Metropolitano</div>
-                                <div class="card p-4 rounded-lg"><strong>Tijuana:</strong> CECUT</div>
-                            </div>
-                        </div>
-                        <div>
-                            <h4 class="text-2xl font-semibold text-white mb-4">Gira Internacional 🌎</h4>
-                            <div class="space-y-4">
-                               <div class="card p-4 rounded-lg"><strong>Madrid, España:</strong> Teatro Rialto o Lope de Vega</div>
-                               <div class="card p-4 rounded-lg"><strong>Los Ángeles, EE.UU.:</strong> Ahmanson Theatre o REDCAT</div>
-                               <div class="card p-4 rounded-lg"><strong>Seúl, Corea del Sur:</strong> LG Arts Center o Sejong Center</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="negocio" class="py-20">
-                <h2 class="text-4xl font-black text-white mb-12">Modelo de Negocio y Finanzas</h2>
-                 <p class="max-w-3xl text-lg text-gray-400 mb-12">
-                    Aquí se desglosa el motor financiero de *SIFU*. Presentamos una estructura de costos clara y un modelo de ingresos diversificado que asegura la rentabilidad y el crecimiento del proyecto a largo plazo.
-                </p>
-                <div class="bg-gray-900 p-6 sm:p-8 rounded-2xl">
-                    <div class="text-center mb-6">
-                        <h3 class="text-2xl font-bold text-white">Presupuesto Global Estimado</h3>
-                        <p class="text-4xl font-black text-red-500">$18M - $22M MXN</p>
-                    </div>
-                    <div class="chart-container mx-auto">
-                        <canvas id="financialsChart"></canvas>
-                    </div>
-                    <div class="flex justify-center mt-6 space-x-4">
-                        <button id="showBudgetBtn" class="btn-accent px-6 py-2 rounded-lg font-semibold">Ver Presupuesto</button>
-                        <button id="showRevenueBtn" class="btn-secondary px-6 py-2 rounded-lg font-semibold">Ver Ingresos</button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="inversion" class="py-20 text-center">
-                <h2 class="text-4xl font-black text-white mb-12">¿Por qué Invertir en SIFU?</h2>
-                 <p class="max-w-3xl mx-auto text-lg text-gray-400 mb-12">
-                    *SIFU* es más que una obra de teatro; es una oportunidad para ser parte de un proyecto audaz, inteligente y comercialmente explosivo que definirá el teatro de espectáculo en México para la próxima década.
-                </p>
-                <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="card p-8 rounded-lg">
-                        <h3 class="text-2xl font-bold text-red-500 mb-3">Concepto de Alto Impacto</h3>
-                        <p class="text-gray-300">Fusiona videojuego, teatro y cine, atrapando a tres públicos en uno: teatral, gamer y fan de la acción.</p>
-                    </div>
-                    <div class="card p-8 rounded-lg">
-                        <h3 class="text-2xl font-bold text-red-500 mb-3">Espectáculo Inolvidable</h3>
-                        <p class="text-gray-300">Garantiza un impacto emocional y una conversación viral a través de su innovadora producción y un giro de guion devastador.</p>
-                    </div>
-                    <div class="card p-8 rounded-lg">
-                        <h3 class="text-2xl font-bold text-red-500 mb-3">Modelo de Negocio Escalable</h3>
-                        <p class="text-gray-300">Diseñado desde el día uno para ser rentable en giras nacionales e internacionales, minimizando costos y maximizando alcance.</p>
-                    </div>
-                    <div class="card p-8 rounded-lg">
-                        <h3 class="text-2xl font-bold text-red-500 mb-3">Múltiples Vías de Retorno</h3>
-                        <p class="text-gray-300">La inversión se diversifica en taquilla, patrocinios, merchandising de alto margen y la venta futura de licencias internacionales.</p>
-                    </div>
-                </div>
-            </section>
+<body class="bg-gray-900">
+    <!-- Navegación principal -->
+    <nav class="w-full bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
+            <div class="flex items-center gap-2">
+                <img src="img/sifu-1.png" alt="Logo Sifu" class="w-10 h-10 rounded-full object-cover" />
+                <span class="text-xl font-black text-white">SIFU</span>
+            </div>
+            <div class="hidden md:flex gap-6">
+                <a href="#vision" class="text-gray-300 hover:text-red-500 font-semibold">Visión</a>
+                <a href="#equipo" class="text-gray-300 hover:text-red-500 font-semibold">Equipo</a>
+                <a href="#gira" class="text-gray-300 hover:text-red-500 font-semibold">Gira</a>
+                <a href="#cronograma" class="text-gray-300 hover:text-red-500 font-semibold">Cronograma</a>
+                <a href="#finanzas" class="text-gray-300 hover:text-red-500 font-semibold">Finanzas</a>
+                <a href="#pitch" class="text-gray-300 hover:text-red-500 font-semibold">Pitch</a>
+                <a href="#niveles" class="text-gray-300 hover:text-red-500 font-semibold">Niveles</a>
+            </div>
+            <!-- Menú móvil -->
+            <div class="md:hidden">
+                <button id="menuBtn" class="text-gray-300 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
         </div>
+        <div id="mobileMenu" class="md:hidden hidden bg-gray-900 border-t border-gray-800 px-4 py-2">
+            <a href="#vision" class="block py-2 text-gray-300 hover:text-red-500 font-semibold">Visión</a>
+            <a href="#equipo" class="block py-2 text-gray-300 hover:text-red-500 font-semibold">Equipo</a>
+            <a href="#gira" class="block py-2 text-gray-300 hover:text-red-500 font-semibold">Gira</a>
+            <a href="#cronograma" class="block py-2 text-gray-300 hover:text-red-500 font-semibold">Cronograma</a>
+            <a href="#finanzas" class="block py-2 text-gray-300 hover:text-red-500 font-semibold">Finanzas</a>
+            <a href="#pitch" class="block py-2 text-gray-300 hover:text-red-500 font-semibold">Pitch</a>
+            <a href="#niveles" class="block py-2 text-gray-300 hover:text-red-500 font-semibold">Niveles</a>
+        </div>
+        <script>
+            const menuBtn = document.getElementById('menuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            menuBtn && menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        </script>
+    </nav>
+    <header class="w-full flex flex-col items-center py-8 bg-gray-800">
+        <img src="img/sifu-1.png" alt="Sifu Escena" class="w-full max-w-2xl rounded-xl shadow-lg mb-4 object-cover" />
+        <h1 class="text-4xl md:text-6xl font-black text-white mb-2 text-center">SIFU</h1>
+        <p class="text-lg md:text-2xl text-red-500 font-semibold text-center">La Siguiente Generación del
+            Entretenimiento en Vivo</p>
+    </header>
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <section id="vision" class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-4">Visión y Concepto</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gray-800 rounded-lg p-6 shadow">
+                    <h3 class="font-bold text-xl text-white mb-2">Concepto</h3>
+                    <p class="text-gray-300">Una producción teatral de artes marciales de alto impacto que fusiona la
+                        narrativa de un videojuego, la profundidad de una tragedia griega y una estética neo-noir. Sifu
+                        es una experiencia inmersiva que narra un ciclo de venganza a través de décadas, explorando el
+                        costo de la violencia y la búsqueda de identidad.</p>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-6 shadow">
+                    <h3 class="font-bold text-xl text-white mb-2">Logline</h3>
+                    <p class="text-gray-300">Tras presenciar el asesinato de su padre, un joven dedica su vida a la
+                        venganza, solo para descubrir que cada enemigo abatido le cuesta una década de su propia
+                        existencia y lo acerca a una verdad devastadora que destruirá su mundo.</p>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-6 shadow">
+                    <h3 class="font-bold text-xl text-white mb-2">Diferenciador Clave</h3>
+                    <p class="text-gray-300">No es solo teatro, es la siguiente generación de entretenimiento en vivo.
+                        Un espectáculo multidisciplinario diseñado para girar a nivel global.</p>
+                </div>
+            </div>
+        </section>
+        <section id="equipo" class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-4">Equipo Técnico Esencial</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div
+                    class="bg-gray-800 rounded-lg p-4 text-center shadow transition transform hover:scale-105 hover:bg-gray-700 hover:shadow-xl hover:border-2 hover:border-red-500">
+                    <span class="text-4xl">🎬</span>
+                    <h4 class="font-bold mt-2 text-white">Director/a General</h4>
+                    <p class="text-sm text-gray-400">Alma creativa y líder del espectáculo multidisciplinario.</p>
+                </div>
+                <div
+                    class="bg-gray-800 rounded-lg p-4 text-center shadow transition transform hover:scale-105 hover:bg-gray-700 hover:shadow-xl hover:border-2 hover:border-red-500">
+                    <span class="text-4xl">💼</span>
+                    <h4 class="font-bold mt-2 text-white">Productor/a Ejecutivo</h4>
+                    <p class="text-sm text-gray-400">Cerebro financiero y logístico del proyecto.</p>
+                </div>
+                <div
+                    class="bg-gray-800 rounded-lg p-4 text-center shadow transition transform hover:scale-105 hover:bg-gray-700 hover:shadow-xl hover:border-2 hover:border-red-500">
+                    <span class="text-4xl">🥋</span>
+                    <h4 class="font-bold mt-2 text-white">Coreógrafo/a de Combate</h4>
+                    <p class="text-sm text-gray-400">Narra la evolución del personaje a través del movimiento.</p>
+                </div>
+                <div
+                    class="bg-gray-800 rounded-lg p-4 text-center shadow transition transform hover:scale-105 hover:bg-gray-700 hover:shadow-xl hover:border-2 hover:border-red-500">
+                    <span class="text-4xl">🖼️</span>
+                    <h4 class="font-bold mt-2 text-white">Diseñador/a de Escenografía</h4>
+                    <p class="text-sm text-gray-400">Fusiona el espacio físico y digital para la gira.</p>
+                </div>
+                <div
+                    class="bg-gray-800 rounded-lg p-4 text-center shadow transition transform hover:scale-105 hover:bg-gray-700 hover:shadow-xl hover:border-2 hover:border-red-500">
+                    <span class="text-4xl">💡</span>
+                    <h4 class="font-bold mt-2 text-white">Diseñador/a de Iluminación</h4>
+                    <p class="text-sm text-gray-400">Crea atmósferas y guía la narrativa con luz.</p>
+                </div>
+                <div
+                    class="bg-gray-800 rounded-lg p-4 text-center shadow transition transform hover:scale-105 hover:bg-gray-700 hover:shadow-xl hover:border-2 hover:border-red-500">
+                    <span class="text-4xl">🔊</span>
+                    <h4 class="font-bold mt-2 text-white">Diseñador/a de Sonido</h4>
+                    <p class="text-sm text-gray-400">Construye el paisaje sonoro inmersivo de la obra.</p>
+                </div>
+                <div
+                    class="bg-gray-800 rounded-lg p-4 text-center shadow transition transform hover:scale-105 hover:bg-gray-700 hover:shadow-xl hover:border-2 hover:border-red-500">
+                    <span class="text-4xl">📋</span>
+                    <h4 class="font-bold mt-2 text-white">Jefe Técnico / Stage Manager</h4>
+                    <p class="text-sm text-gray-400">Comandante de la ejecución en cada función.</p>
+                </div>
+                <div
+                    class="bg-gray-800 rounded-lg p-4 text-center shadow transition transform hover:scale-105 hover:bg-gray-700 hover:shadow-xl hover:border-2 hover:border-red-500">
+                    <span class="text-4xl">🚚</span>
+                    <h4 class="font-bold mt-2 text-white">Equipo de Gira</h4>
+                    <p class="text-sm text-gray-400">Unidad compacta para montaje y operación en gira.</p>
+                </div>
+            </div>
+        </section>
+        <!-- Sección Escenografía -->
+        <section id="escenografia" class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-4">Escenografía</h2>
+            <div class="bg-gray-800 rounded-lg p-6 shadow flex flex-col items-center">
+                <p class="text-gray-300 mb-4 text-center">Prototipo visual de la escenografía para SIFU. El video
+                    muestra la integración de elementos físicos y digitales en el espacio escénico.</p>
+                <video controls class="w-full max-w-2xl rounded-lg shadow-lg mb-4">
+                    <source src="video/prototipo.mp4" type="video/mp4">
+                    Tu navegador no soporta la reproducción de video.
+                </video>
+            </div>
+        </section>
+        <section id="gira" class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-4">Plan de Gira y Mercados Estratégicos</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-2xl font-semibold text-white mb-4">Gira Nacional 🇲🇽</h3>
+                    <ul class="space-y-4">
+                        <li class="bg-gray-800 rounded-lg p-4"><strong>CDMX:</strong> Teatro de los Insurgentes</li>
+                        <li class="bg-gray-800 rounded-lg p-4"><strong>Guadalajara:</strong> Teatro Diana</li>
+                        <li class="bg-gray-800 rounded-lg p-4"><strong>Monterrey:</strong> Auditorio Pabellón M</li>
+                        <li class="bg-gray-800 rounded-lg p-4"><strong>Querétaro:</strong> Teatro Metropolitano</li>
+                        <li class="bg-gray-800 rounded-lg p-4"><strong>Tijuana:</strong> CECUT</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-semibold text-white mb-4">Gira Internacional 🌎</h3>
+                    <ul class="space-y-4">
+                        <li class="bg-gray-800 rounded-lg p-4"><strong>Madrid, España:</strong> Teatro Rialto o Lope de
+                            Vega</li>
+                        <li class="bg-gray-800 rounded-lg p-4"><strong>Los Ángeles, EE.UU.:</strong> Ahmanson Theatre o
+                            REDCAT</li>
+                        <li class="bg-gray-800 rounded-lg p-4"><strong>Seúl, Corea del Sur:</strong> LG Arts Center o
+                            Sejong Center</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section id="cronograma" class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-4">Cronograma General (24 Meses)</h2>
+            <div class="space-y-6">
+                <div class="bg-gray-800 rounded-lg p-4">
+                    <h4 class="font-bold text-xl text-red-500">Fase 1: Pre-producción (6 meses)</h4>
+                    <p class="text-gray-300">Cierre de financiamiento, contratación de creativos, casting y diseño
+                        final.</p>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-4">
+                    <h4 class="font-bold text-xl text-red-500">Fase 2: Producción y Ensayos (4 meses)</h4>
+                    <p class="text-gray-300">Construcción de escenografía, confección de vestuario y ensayos intensivos
+                        de combate y técnicos.</p>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-4">
+                    <h4 class="font-bold text-xl text-red-500">Fase 3: Estreno y Temporada Inicial (4 meses)</h4>
+                    <p class="text-gray-300">Estreno en CDMX para generar críticas, boca a boca y recuperar inversión
+                        inicial.</p>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-4">
+                    <h4 class="font-bold text-xl text-red-500">Fase 4: Gira Nacional (6 meses)</h4>
+                    <p class="text-gray-300">Expansión a mercados clave de México: Guadalajara, Monterrey, Querétaro,
+                        Tijuana.</p>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-4">
+                    <h4 class="font-bold text-xl text-red-500">Fase 5: Gira Internacional (6-9 meses)</h4>
+                    <p class="text-gray-300">Lanzamiento global en mercados estratégicos: Madrid, Los Ángeles, Seúl.</p>
+                </div>
+            </div>
+        </section>
+        <section id="finanzas" class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-4">Modelo de Negocio y Finanzas</h2>
+            <div class="bg-gray-900 p-6 rounded-2xl">
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold text-white">Presupuesto Global Estimado</h3>
+                    <p class="text-4xl font-black text-red-500">$18M - $22M MXN</p>
+                </div>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-8">
+                    <img src="img/sifu-2.png" alt="Sifu Producción"
+                        class="w-full max-w-xs rounded-xl shadow-lg mb-4 object-cover" />
+                    <div class="w-full max-w-md">
+                        <ul class="space-y-2 text-gray-300">
+                            <li><strong>Producción (50%):</strong> Escenografía modular, equipo de proyección y LED,
+                                vestuario, sueldos y marketing de estreno.</li>
+                            <li><strong>Gira y Operación (30%):</strong> Transporte, viáticos, renta de teatros y
+                                marketing local.</li>
+                            <li><strong>Pre-producción (20%):</strong> Sueldos creativos, casting, talleres, diseños y
+                                costos legales.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <h4 class="text-xl font-bold text-white mb-2">Fuentes de Ingreso</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><strong>Taquilla:</strong> Principal fuente, boleto promedio $950 MXN, ocupación 70% en
+                            teatros de 1,200-1,500 asientos.</li>
+                        <li><strong>Patrocinios:</strong> Marcas de tecnología, bebidas premium y ropa urbana/deportiva.
+                        </li>
+                        <li><strong>Merchandising:</strong> Coleccionables, réplicas, línea de ropa y soundtrack en
+                            vinilo.</li>
+                        <li><strong>Licencias:</strong> Venta de derechos para montajes internacionales.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section id="pitch" class="mb-12 text-center">
+            <h2 class="text-3xl font-bold text-white mb-4">¿Por qué Invertir en SIFU?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gray-800 rounded-lg p-8">
+                    <h3 class="text-2xl font-bold text-red-500 mb-3">Concepto de Alto Impacto</h3>
+                    <p class="text-gray-300">Fusiona videojuego, teatro y cine, atrapando a tres públicos en uno:
+                        teatral, gamer y fan de la acción.</p>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-8">
+                    <h3 class="text-2xl font-bold text-red-500 mb-3">Espectáculo Inolvidable</h3>
+                    <p class="text-gray-300">Garantiza un impacto emocional y una conversación viral a través de su
+                        innovadora producción y un giro de guion devastador.</p>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-8">
+                    <h3 class="text-2xl font-bold text-red-500 mb-3">Modelo de Negocio Escalable</h3>
+                    <p class="text-gray-300">Diseñado desde el día uno para ser rentable en giras nacionales e
+                        internacionales, minimizando costos y maximizando alcance.</p>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-8">
+                    <h3 class="text-2xl font-bold text-red-500 mb-3">Múltiples Vías de Retorno</h3>
+                    <p class="text-gray-300">La inversión se diversifica en taquilla, patrocinios, merchandising de alto
+                        margen y la venta futura de licencias internacionales.</p>
+                </div>
+            </div>
+        </section>
+        <section id="niveles" class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-8 text-center">Niveles de la Obra</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-800 rounded-lg p-6 shadow">
+                    <h3 class="text-2xl font-bold text-red-500 mb-2">Nivel 1: La Caída del Dojo</h3>
+                    <p class="text-gray-300 mb-2">La obra abre en el dojo, donde Jaky recibe el talismán y el legado de
+                        venganza tras la muerte de su padre. El montaje físico muestra su transformación de niño a joven
+                        guerrero.</p>
+                    <ul class="list-disc ml-6 text-gray-400 mb-2">
+                        <li>Herida psicológica y duda sobre la lealtad al padre.</li>
+                        <li>Juramento y talismán como incidente incitador.</li>
+                        <li>Escenografía: estructura modular de 3 niveles, minimalismo brutalista asiático.</li>
+                        <li>Vestuario: evolución del gi de Jaky, asesinos con detalles asiáticos urbanos.</li>
+                        <li>Iluminación: paleta simbólica, luz roja para el montaje de venganza.</li>
+                        <li>Sonido: guzheng, NIN, atmósferas tensas y coreografía sonora de la lucha.</li>
+                    </ul>
+                    <a href="nivel-1.html"
+                        class="inline-block mt-4 px-5 py-2 rounded-lg bg-red-600 text-white font-bold hover:bg-red-700 transition">Ver
+                        página completa</a>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-6 shadow">
+                    <h3 class="text-2xl font-bold text-green-500 mb-2">Nivel 2: Tierra Viva</h3>
+                    <p class="text-gray-300 mb-2">Jaky enfrenta a Tierra Viva en una comuna urbana, enfrentando la
+                        mecánica del talismán y el costo real de la venganza. El espacio evoluciona de pasillo opresivo
+                        a
+                        invernadero de bambú.</p>
+                    <ul class="list-disc ml-6 text-gray-400 mb-2">
+                        <li>Primer enfrentamiento y muerte: el tiempo como precio.</li>
+                        <li>Evolución del guerrero: furia vs. precisión táctica.</li>
+                        <li>Antagonista con convicción y revelación sobre el padre.</li>
+                        <li>Escenografía: decadencia urbana, naturaleza artificial, estructura modular.</li>
+                        <li>Vestuario: evolución urbana de Jaky, Tierra Viva como jardinero de la muerte.</li>
+                        <li>Iluminación: verde neón, ritual de muerte con cenital rojo.</li>
+                    </ul>
+                    <a href="nivel-2.html"
+                        class="inline-block mt-4 px-5 py-2 rounded-lg bg-green-600 text-white font-bold hover:bg-green-700 transition">Ver
+                        página completa</a>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-6 shadow">
+                    <h3 class="text-2xl font-bold text-blue-500 mb-2">Nivel 3: Agua</h3>
+                    <p class="text-gray-300 mb-2">Jaky llega a un museo de arte contemporáneo, enfrentando a Agua en un
+                        duelo de técnica y belleza letal. El espacio se transforma en la "Galería de la Muerte" con
+                        proyecciones y una cascada monumental.</p>
+                    <ul class="list-disc ml-6 text-gray-400 mb-2">
+                        <li>Escalada de poder y conspiración.</li>
+                        <li>Derrota por técnica superior y nacimiento del estratega.</li>
+                        <li>Escenografía: espacios blancos, proyecciones, cascada LED.</li>
+                        <li>Vestuario: evolución sobria de Jaky, Agua con kimono vibrante.</li>
+                        <li>Iluminación: luz de museo, duelo final con luz azul y proyección de agua.</li>
+                        <li>Sonido: atmósfera minimalista, fusión de instrumentos y distorsión industrial.</li>
+                    </ul>
+                    <a href="nivel-3.html"
+                        class="inline-block mt-4 px-5 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition">Ver
+                        página completa</a>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-6 shadow">
+                    <h3 class="text-2xl font-bold text-yellow-500 mb-2">Nivel 4: Aire y Fuego</h3>
+                    <p class="text-gray-300 mb-2">Jaky asciende al penthouse, enfrentando la verdad sobre su madre y el
+                        líder final. El club nocturno y el ventanal se transforman en un infierno personal y espiritual.
+                    </p>
+                    <ul class="list-disc ml-6 text-gray-400 mb-2">
+                        <li>Venganza ciega y vulnerabilidad.</li>
+                        <li>Revelación de Aire como madre y anagnórisis final.</li>
+                        <li>Escenografía: club de lujo, humo, ventanal LED con proyección de fuego.</li>
+                        <li>Vestuario: Jaky como maestro consumado, Aire poderosa, Fuego como CEO/Yakuza.</li>
+                        <li>Iluminación: láseres, neones, humo y proyección de llamas.</li>
+                        <li>Sonido: synth-wave, atmósferas densas y coreografía sonora del duelo final.</li>
+                    </ul>
+                    <a href="nivel-4.html"
+                        class="inline-block mt-4 px-5 py-2 rounded-lg bg-yellow-500 text-white font-bold hover:bg-yellow-600 transition">Ver
+                        página completa</a>
+                </div>
+            </div>
+        </section>
     </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const sections = document.querySelectorAll('section');
-            const navLinks = document.querySelectorAll('.nav-link');
-
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.5
-            };
-
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href').substring(1) === entry.target.id) {
-                                link.classList.add('active');
-                            }
-                        });
-                    }
-                });
-            }, observerOptions);
-
-            sections.forEach(section => {
-                observer.observe(section);
-            });
-
-            const budgetData = {
-                labels: ['Producción', 'Gira y Operación', 'Pre-producción'],
-                datasets: [{
-                    label: 'Distribución del Presupuesto',
-                    data: [50, 30, 20],
-                    backgroundColor: ['#991B1B', '#DC2626', '#F87171'],
-                    borderColor: '#1F2937',
-                    borderWidth: 4,
-                    hoverOffset: 4
-                }]
-            };
-
-            const revenueData = {
-                labels: ['Taquilla', 'Patrocinios', 'Merchandising', 'Licencias'],
-                datasets: [{
-                    label: 'Fuentes de Ingreso',
-                    data: [60, 25, 10, 5],
-                    backgroundColor: ['#1D4ED8', '#2563EB', '#60A5FA', '#93C5FD'],
-                    borderColor: '#1F2937',
-                    borderWidth: 4,
-                    hoverOffset: 4
-                }]
-            };
-            
-            const chartConfig = {
-                type: 'doughnut',
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: '#E5E7EB',
-                                font: {
-                                    size: 14,
-                                    family: 'Inter'
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed !== null) {
-                                        label += context.parsed + '%';
-                                    }
-                                    return label;
-                                }
-                            }
-                        }
-                    },
-                    cutout: '60%'
-                }
-            };
-
-            const ctx = document.getElementById('financialsChart').getContext('2d');
-            let financialsChart = new Chart(ctx, { ...chartConfig, data: budgetData });
-
-            const showBudgetBtn = document.getElementById('showBudgetBtn');
-            const showRevenueBtn = document.getElementById('showRevenueBtn');
-
-            function updateChart(data) {
-                financialsChart.data = data;
-                financialsChart.update();
-            }
-
-            showBudgetBtn.addEventListener('click', () => {
-                updateChart(budgetData);
-                showBudgetBtn.classList.replace('btn-secondary', 'btn-accent');
-                showRevenueBtn.classList.replace('btn-accent', 'btn-secondary');
-            });
-
-            showRevenueBtn.addEventListener('click', () => {
-                updateChart(revenueData);
-                showRevenueBtn.classList.replace('btn-secondary', 'btn-accent');
-                showBudgetBtn.classList.replace('btn-accent', 'btn-secondary');
-            });
-            
-            showBudgetBtn.click();
-        });
-    </script>
-
+    <footer class="w-full py-6 bg-gray-800 text-center text-gray-400 text-sm">
+        &copy; 2025 SIFU. Dossier de Producción. Todos los derechos reservados.
+    </footer>
 </body>
+
 </html>
