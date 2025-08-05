@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Desglose del Presupuesto</title>
+   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-900 text-white">
+   <nav class="w-full bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
+         <div class="flex items-center gap-2">
+            <a href="index.html"><img src="img/sifu-1.png" alt="Logo Sifu"
+                  class="w-10 h-10 rounded-full object-cover" /></a>
+            <span class="text-xl font-black text-white">SIFU</span>
+         </div>
+         <div class="hidden md:flex gap-6">
+            <a href="index.html#finanzas" class="text-gray-300 hover:text-red-500 font-semibold">Volver</a>
+         </div>
+      </div>
+   </nav>
+   <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <h1 class="text-4xl font-bold text-center mb-8">Desglose Detallado del Presupuesto</h1>
+      <section class="mb-12">
+         <h2 class="text-3xl font-bold mb-4">Producción (50%)</h2>
+         <ul class="space-y-2 text-gray-300">
+            <li>Escenografía modular y equipo de proyección LED: $12M MXN</li>
+            <li>Vestuario y utilería: $6M MXN</li>
+            <li>Sueldos del equipo creativo y técnico (50 personas, promedio $50,000 MXN/mes por 6 meses): $15M MXN</li>
+            <li>Honorarios Jackie Chan (actor principal, contrato internacional): <span
+                  class="font-bold text-red-400">$6M MXN</span>
+            </li>
+            <li>Marketing de estreno: $3M MXN</li>
+         </ul>
+      </section>
+      <section class="mb-12">
+         <h2 class="text-3xl font-bold mb-4">Gira y Operación (30%)</h2>
+         <ul class="space-y-2 text-gray-300">
+            <li>Transporte y logística (10 ciudades, $500,000 MXN por ciudad): $5M MXN</li>
+            <li>Viáticos y hospedaje (50 personas, $3,000 MXN/día por 30 días): $4.5M MXN</li>
+            <li>Renta de teatros y espacios (10 ciudades, $1M MXN por ciudad): $10M MXN</li>
+            <li>Marketing local: $2M MXN</li>
+         </ul>
+      </section>
+      <section class="mb-12">
+         <h2 class="text-3xl font-bold mb-4">Pre-producción (20%)</h2>
+         <ul class="space-y-2 text-gray-300">
+            <li>Sueldos creativos y casting (20 personas, promedio $40,000 MXN/mes por 6 meses): $4.8M MXN</li>
+            <li>Talleres y diseño: $3M MXN</li>
+            <li>Costos legales y administrativos: $3.2M MXN</li>
+         </ul>
+      </section>
+      <section class="mb-12">
+         <h2 class="text-3xl font-bold mb-4">Resumen Global</h2>
+         <div
+            class="bg-gray-800 rounded-xl p-6 shadow-lg flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+               <p class="text-lg text-gray-200 mb-2">Total Producción: <span class="font-bold text-red-400">$42M
+                     MXN</span>
+               </p>
+               <p class="text-lg text-gray-200 mb-2">Total Gira y Operación: <span
+                     class="font-bold text-yellow-400">$21.5M
+                     MXN</span></p>
+               <p class="text-lg text-gray-200 mb-2">Total Pre-producción: <span class="font-bold text-blue-400">$11M
+                     MXN</span>
+               </p>
+            </div>
+            <div class="text-2xl font-black text-green-400">Presupuesto Global Estimado: $74.5M MXN</div>
+         </div>
+      </section>
+   </main>
+</body>
+
+</html>
